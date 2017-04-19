@@ -112,6 +112,8 @@ public class SpaceGame {
     private long window;
     private int width = 800;
     private int height = 600;
+    private int fbWidth = 800;
+    private int fbHeight = 600;
 
     private int cubemapProgram;
     private int cubemap_invViewProjUniform;
@@ -189,7 +191,7 @@ public class SpaceGame {
 
     private ByteBuffer charBuffer = BufferUtils.createByteBuffer(16 * 270);
 
-    private boolean windowed = false;
+    private boolean windowed = true;
     private boolean[] keyDown = new boolean[GLFW.GLFW_KEY_LAST];
     private boolean leftMouseDown = false;
     private boolean rightMouseDown = false;
@@ -218,6 +220,7 @@ public class SpaceGame {
     private GLFWCursorPosCallback cpCallback;
     private GLFWMouseButtonCallback mbCallback;
     private GLFWFramebufferSizeCallback fbCallback;
+    private GLFWWindowSizeCallback wsCallback;
     private Callback debugProc;
 
     private void init() throws IOException {
@@ -232,8 +235,10 @@ public class SpaceGame {
         long monitor = glfwGetPrimaryMonitor();
         GLFWVidMode vidmode = glfwGetVideoMode(monitor);
         if (!windowed) {
-        width = vidmode.width();
-        height = vidmode.height();
+            width = vidmode.width();
+            height = vidmode.height();
+            fbWidth = width;
+            fbHeight = height;
         }
         window = glfwCreateWindow(width, height, "Little Space Shooter Game", !windowed ? monitor : 0L, NULL);
         if (window == NULL) {
@@ -242,6 +247,14 @@ public class SpaceGame {
         glfwSetCursor(window, glfwCreateStandardCursor(GLFW_CROSSHAIR_CURSOR));
 
         glfwSetFramebufferSizeCallback(window, fbCallback = new GLFWFramebufferSizeCallback() {
+            public void invoke(long window, int width, int height) {
+                if (width > 0 && height > 0 && (SpaceGame.this.fbWidth != width || SpaceGame.this.fbHeight != height)) {
+                    SpaceGame.this.fbWidth = width;
+                    SpaceGame.this.fbHeight = height;
+                }
+            }
+        });
+        glfwSetWindowSizeCallback(window, wsCallback = new GLFWWindowSizeCallback() {
             public void invoke(long window, int width, int height) {
                 if (width > 0 && height > 0 && (SpaceGame.this.width != width || SpaceGame.this.height != height)) {
                     SpaceGame.this.width = width;
@@ -299,8 +312,8 @@ public class SpaceGame {
 
         IntBuffer framebufferSize = BufferUtils.createIntBuffer(2);
         nglfwGetFramebufferSize(window, memAddress(framebufferSize), memAddress(framebufferSize) + 4);
-        width = framebufferSize.get(0);
-        height = framebufferSize.get(1);
+        fbWidth = framebufferSize.get(0);
+        fbHeight = framebufferSize.get(1);
         caps = GL.createCapabilities();
         if (!caps.OpenGL20) {
             throw new AssertionError("This demo requires OpenGL 2.0.");
@@ -377,7 +390,7 @@ public class SpaceGame {
         glCompileShader(shader);
         int compiled = glGetShaderi(shader, GL_COMPILE_STATUS);
         String shaderLog = glGetShaderInfoLog(shader);
-        if (shaderLog.trim().length() > 0) {
+        if (shaderLog != null && shaderLog.trim().length() > 0) {
             System.err.println(shaderLog);
         }
         if (compiled == 0) {
@@ -393,7 +406,7 @@ public class SpaceGame {
         glLinkProgram(program);
         int linked = glGetProgrami(program, GL_LINK_STATUS);
         String programLog = glGetProgramInfoLog(program);
-        if (programLog.trim().length() > 0) {
+        if (programLog != null && programLog.trim().length() > 0) {
             System.err.println(programLog);
         }
         if (linked == 0) {
@@ -460,7 +473,7 @@ public class SpaceGame {
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_GENERATE_MIPMAP, GL_TRUE);
         for (int i = 0; i < 6; i++) {
             imageBuffer = ioResourceToByteBuffer("org/lwjgl/demo/space_" + names[i] + (i + 1) + ".jpg", 8 * 1024);
-            if (stbi_info_from_memory(imageBuffer, w, h, comp) == 0)
+            if (!stbi_info_from_memory(imageBuffer, w, h, comp))
                 throw new IOException("Failed to read image information: " + stbi_failure_reason());
             image = stbi_load_from_memory(imageBuffer, w, h, comp, 0);
             if (image == null)
@@ -1016,7 +1029,7 @@ public class SpaceGame {
     private void loop() {
         while (!glfwWindowShouldClose(window)) {
             glfwPollEvents();
-            glViewport(0, 0, width, height);
+            glViewport(0, 0, fbWidth, fbHeight);
             update();
             render();
             glfwSwapBuffers(window);
@@ -1035,6 +1048,7 @@ public class SpaceGame {
             cpCallback.free();
             mbCallback.free();
             fbCallback.free();
+            wsCallback.free();
             glfwDestroyWindow(window);
         } catch (Throwable t) {
             t.printStackTrace();

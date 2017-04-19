@@ -9,7 +9,6 @@ import static org.lwjgl.vulkan.EXTDebugReport.*;
 import static org.lwjgl.vulkan.KHRSwapchain.*;
 import static org.lwjgl.vulkan.KHRSurface.*;
 import static org.lwjgl.vulkan.VK10.*;
-import static org.lwjgl.vulkan.VKUtil.*;
 import static org.lwjgl.demo.vulkan.VKUtil.*;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.glfw.GLFWVulkan.*;
@@ -501,7 +500,7 @@ public class ClearScreenDemo {
                 .pQueueFamilyIndices(null)
                 .presentMode(swapchainPresentMode)
                 .oldSwapchain(oldSwapChain)
-                .clipped(VK_TRUE)
+                .clipped(true)
                 .compositeAlpha(VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR);
         swapchainCI.imageExtent()
                 .width(width)

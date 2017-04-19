@@ -5,9 +5,9 @@
 	<artifactId>lwjgl3-demos</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<properties>
-		<lwjgl.version>3.0.1-SNAPSHOT</lwjgl.version>
-		<swt.version>4.5.2</swt.version>
-		<joml.version>1.8.1-SNAPSHOT</joml.version>
+		<lwjgl.version>3.1.2-SNAPSHOT</lwjgl.version>
+		<swt.version>4.6.1</swt.version>
+		<joml.version>1.9.2</joml.version>
 		<!-- Can be overwritten via -D property during mvn invoke to specify a 
 			different demo. The package "org.lwjgl.demo." is prepended automatically. -->
 		<class>game.SpaceGame</class>
@@ -20,14 +20,9 @@
 					<family>Windows</family>
 				</os>
 			</activation>
-			<dependencies>
-				<dependency>
-					<groupId>org.lwjgl</groupId>
-					<artifactId>lwjgl-platform</artifactId>
-					<version>${lwjgl.version}</version>
-					<classifier>natives-windows</classifier>
-				</dependency>
-			</dependencies>
+			<properties>
+				<platform>windows</platform>
+			</properties>
 		</profile>
 		<profile>
 			<id>windows-x86</id>
@@ -68,14 +63,9 @@
 					<family>Linux</family>
 				</os>
 			</activation>
-			<dependencies>
-				<dependency>
-					<groupId>org.lwjgl</groupId>
-					<artifactId>lwjgl-platform</artifactId>
-					<version>${lwjgl.version}</version>
-					<classifier>natives-linux</classifier>
-				</dependency>
-			</dependencies>
+			<properties>
+				<platform>linux</platform>
+			</properties>
 		</profile>
 		<profile>
 			<id>linux-x86</id>
@@ -116,13 +106,10 @@
 					<family>Mac</family>
 				</os>
 			</activation>
+			<properties>
+				<platform>macos</platform>
+			</properties>
 			<dependencies>
-				<dependency>
-					<groupId>org.lwjgl</groupId>
-					<artifactId>lwjgl-platform</artifactId>
-					<version>${lwjgl.version}</version>
-					<classifier>natives-osx</classifier>
-				</dependency>
 				<dependency>
 					<groupId>org.eclipse.swt</groupId>
 					<artifactId>org.eclipse.swt.cocoa.macosx.x86_64</artifactId>
@@ -194,6 +181,72 @@
 			<groupId>org.lwjgl</groupId>
 			<artifactId>lwjgl</artifactId>
 			<version>${lwjgl.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.lwjgl</groupId>
+			<artifactId>lwjgl-vulkan</artifactId>
+			<version>${lwjgl.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.lwjgl</groupId>
+			<artifactId>lwjgl-glfw</artifactId>
+			<version>${lwjgl.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.lwjgl</groupId>
+			<artifactId>lwjgl-opengl</artifactId>
+			<version>${lwjgl.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.lwjgl</groupId>
+			<artifactId>lwjgl-stb</artifactId>
+			<version>${lwjgl.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.lwjgl</groupId>
+			<artifactId>lwjgl-bgfx</artifactId>
+			<version>${lwjgl.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.lwjgl</groupId>
+			<artifactId>lwjgl-assimp</artifactId>
+			<version>${lwjgl.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.lwjgl</groupId>
+			<artifactId>lwjgl</artifactId>
+			<version>${lwjgl.version}</version>
+			<classifier>natives-${platform}</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.lwjgl</groupId>
+			<artifactId>lwjgl-opengl</artifactId>
+			<version>${lwjgl.version}</version>
+			<classifier>natives-${platform}</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.lwjgl</groupId>
+			<artifactId>lwjgl-glfw</artifactId>
+			<version>${lwjgl.version}</version>
+			<classifier>natives-${platform}</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.lwjgl</groupId>
+			<artifactId>lwjgl-stb</artifactId>
+			<version>${lwjgl.version}</version>
+			<classifier>natives-${platform}</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.lwjgl</groupId>
+			<artifactId>lwjgl-bgfx</artifactId>
+			<version>${lwjgl.version}</version>
+			<classifier>natives-${platform}</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.lwjgl</groupId>
+			<artifactId>lwjgl-assimp</artifactId>
+			<version>${lwjgl.version}</version>
+			<classifier>natives-${platform}</classifier>
 		</dependency>
 	</dependencies>
 </project>

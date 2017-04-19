@@ -9,7 +9,6 @@ import static org.lwjgl.vulkan.EXTDebugReport.*;
 import static org.lwjgl.vulkan.KHRSwapchain.*;
 import static org.lwjgl.vulkan.KHRSurface.*;
 import static org.lwjgl.vulkan.VK10.*;
-import static org.lwjgl.vulkan.VKUtil.*;
 import static org.lwjgl.demo.vulkan.VKUtil.*;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.glfw.GLFWVulkan.*;
@@ -531,7 +530,7 @@ public class TwoRotatingTrianglesDemo {
                 .pQueueFamilyIndices(null)
                 .presentMode(swapchainPresentMode)
                 .oldSwapchain(oldSwapChain)
-                .clipped(VK_TRUE)
+                .clipped(true)
                 .compositeAlpha(VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR);
         swapchainCI.imageExtent()
                 .width(width)
@@ -665,7 +664,7 @@ public class TwoRotatingTrianglesDemo {
         memFree(pMemoryTypeIndex);
         LongBuffer pDepthStencilMem = memAllocLong(1);
         err = vkAllocateMemory(device, mem_alloc, null, pDepthStencilMem);
-        long depthStencilMem = pDepthStencilImage.get(0);
+        long depthStencilMem = pDepthStencilMem.get(0);
         memFree(pDepthStencilMem);
         mem_alloc.free();
         if (err != VK_SUCCESS) {
@@ -1138,14 +1137,14 @@ public class TwoRotatingTrianglesDemo {
                 .polygonMode(VK_POLYGON_MODE_FILL)
                 .cullMode(VK_CULL_MODE_NONE) // <- VK_CULL_MODE_BACK_BIT would work here, too!
                 .frontFace(VK_FRONT_FACE_COUNTER_CLOCKWISE)
-                .depthClampEnable(VK_FALSE)
-                .rasterizerDiscardEnable(VK_FALSE)
-                .depthBiasEnable(VK_FALSE);
+                .depthClampEnable(false)
+                .rasterizerDiscardEnable(false)
+                .depthBiasEnable(false);
 
         // Color blend state
         // Describes blend modes and color masks
         VkPipelineColorBlendAttachmentState.Buffer colorWriteMask = VkPipelineColorBlendAttachmentState.calloc(1)
-                .blendEnable(VK_FALSE)
+                .blendEnable(false)
                 .colorWriteMask(0xF); // <- RGBA
         VkPipelineColorBlendStateCreateInfo colorBlendState = VkPipelineColorBlendStateCreateInfo.calloc()
                 .sType(VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO)
@@ -1174,11 +1173,11 @@ public class TwoRotatingTrianglesDemo {
         VkPipelineDepthStencilStateCreateInfo depthStencilState = VkPipelineDepthStencilStateCreateInfo.calloc()
                 // No depth test/write and no stencil used 
                 .sType(VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO)
-                .depthTestEnable(VK_TRUE)
-                .depthWriteEnable(VK_TRUE)
+                .depthTestEnable(true)
+                .depthWriteEnable(true)
                 .depthCompareOp(VK_COMPARE_OP_LESS_OR_EQUAL)
-                .depthBoundsTestEnable(VK_FALSE)
-                .stencilTestEnable(VK_FALSE);
+                .depthBoundsTestEnable(false)
+                .stencilTestEnable(false);
         depthStencilState.back()
                 .failOp(VK_STENCIL_OP_KEEP)
                 .passOp(VK_STENCIL_OP_KEEP)
